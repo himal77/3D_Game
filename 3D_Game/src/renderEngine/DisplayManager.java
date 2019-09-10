@@ -13,7 +13,7 @@ public class DisplayManager {
 	private static final int FPS_CAP = 120;
 	
 	public static void createDisplay(){
-		
+	
 		ContextAttribs attribs = new ContextAttribs(3, 2);
 		attribs.withForwardCompatible(true);
 		attribs.withProfileCore(true);
@@ -21,7 +21,7 @@ public class DisplayManager {
 		try {
 			Display.setDisplayMode(new DisplayMode(WIDTH, HEIGHT));
 			Display.create(new PixelFormat(), attribs);
-			Display.setTitle("Our First Display");
+			Display.setTitle("Java 3D Game");
 		} catch(Exception e) {
 			System.out.println(e);
 		}

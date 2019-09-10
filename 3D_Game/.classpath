@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="Lib/jars/slick-util.jar"/>
-	<classpathentry kind="lib" path="Lib/jars/lwjgl-glfw-natives-linux.jar"/>
 	<classpathentry kind="lib" path="Lib/jars/lwjgl.jar" sourcepath="Lib/jars/lwjgl.jar"/>
 	<classpathentry exported="true" kind="lib" path="Lib/jars/lwjgl_util.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
