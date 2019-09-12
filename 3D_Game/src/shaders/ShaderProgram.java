@@ -95,13 +95,14 @@ public abstract class ShaderProgram {
 			BufferedReader reader = new BufferedReader(new FileReader(file));
 			String line;
 			while((line = reader.readLine()) != null) {
-				shaderSource.append(line).append("\n");
+				shaderSource.append(line).append("//\n");
 			}
 			
 			reader.close();
 			
 		}catch(IOException e) {
 			System.out.println(e);
+			System.exit(-1);
 		}
 		
 		int shaderID = GL20.glCreateShader(type);
