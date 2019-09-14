@@ -21,6 +21,7 @@ public abstract class ShaderProgram {
 	
 	
 	public ShaderProgram(String vertexFile, String fragmentFile) {
+		
 		vertexShaderID = loadShader(vertexFile, GL20.GL_VERTEX_SHADER);
 		fragmentShaderID = loadShader(fragmentFile, GL20.GL_FRAGMENT_SHADER);
 		System.out.println("lado");
@@ -114,7 +115,7 @@ public abstract class ShaderProgram {
 		if(GL20.glGetShader(shaderID, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
 			System.out.println("couldnot load shader file");
 			System.out.println(GL20.glGetShader(shaderID, 500));
-			System.exit(0);
+			System.exit(-1);
 		}
 		
 		return shaderID;

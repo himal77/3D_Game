@@ -40,7 +40,8 @@ public class Loader {
 			
 		Texture texture = null;
 		try {
-			texture = TextureLoader.getTexture("PNG", new FileInputStream("res/" + fileName + ".png"));
+			texture = TextureLoader.getTexture("PNG", 
+					new FileInputStream("res/" + fileName + ".png"));
 		
 		} catch (IOException e) {
 			System.out.println(e);
@@ -75,22 +76,17 @@ public class Loader {
 	}
 	
 	private void storeDataInAttributeList(int attributeNumber,int coordinateSize, float[] data) {
-		
 		int vboID = GL15.glGenBuffers();
 		vbos.add(vboID);
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboID);
 		FloatBuffer buffer = storeDataInFloatBuffer(data);
 		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
 		GL20.glVertexAttribPointer(attributeNumber, coordinateSize, GL11.GL_FLOAT, false, 0, 0);
-		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
-		
-		
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);		
 	}
 	
 	private void unbindVAO() {
-		
 		GL30.glBindVertexArray(0);
-		
 	}
 	
 	private void bindIndicesBuffer(int[] indices) {
