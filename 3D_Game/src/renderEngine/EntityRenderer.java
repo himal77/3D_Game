@@ -3,7 +3,6 @@ package renderEngine;
 import java.util.List;
 import java.util.Map;
 
-import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
@@ -49,7 +48,7 @@ public class EntityRenderer {
 			GL20.glEnableVertexAttribArray(1);
 			GL20.glEnableVertexAttribArray(2);
 			ModelTexture texture = model.getTexture();
-			shader.loadNumberOfRows(texture.getNumbersOfRows());
+			shader.loadNumberOfRows(texture.getNumberOfRows());
 			if(texture.isHasTransparency()) {
 				MasterRenderer.disableCulling();
 			}

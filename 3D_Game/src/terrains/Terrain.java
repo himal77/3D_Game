@@ -17,9 +17,9 @@ import toolbox.Maths;
 
 public class Terrain {
 	
-	private static final float SIZE = 800;
+	private static final float SIZE = 150;
 	private static final float MAX_HEIGHT = 40;
-	private static final float MAX_PIXEL_COLOUR = 256 * 256;
+	private static final float MAX_PIXEL_COLOUR = 256 * 256 * 256;
 	
 	private float x;
 	private float z;
@@ -31,7 +31,6 @@ public class Terrain {
 	
 	public Terrain(int gridX, int gridZ, Loader loader, TerrainTexturePack texturePack, 
 			TerrainTexture blendMap,String heightMap) {
-		
 		this.texturePack = texturePack;
 		this.blendMap = blendMap;
 		this.x = gridX * SIZE;
@@ -44,8 +43,6 @@ public class Terrain {
 	public float getX() {
 		return x;
 	}
-
-
 
 	public float getZ() {
 		return z;
@@ -66,7 +63,7 @@ public class Terrain {
 	public float getHeightOfTerrain(float worldX, float worldZ) {
 		float terrainX = worldX - this.x;
 		float terrainZ = worldZ - this.z;
-		float gridSquareSize = SIZE / (float)heights.length - 1;
+		float gridSquareSize = SIZE / ((float)heights.length - 1);
 		int gridX = (int)Math.floor(terrainX / gridSquareSize);
 		int gridZ = (int)Math.floor(terrainZ / gridSquareSize);
 		if(gridX >= heights.length - 1 || gridZ >= heights.length - 1 || gridX < 0 || gridZ < 0) {
@@ -99,13 +96,13 @@ public class Terrain {
 			e.printStackTrace();
 		}
 		int VERTEX_COUNT = image.getHeight();
-		heights = new float[VERTEX_COUNT][VERTEX_COUNT];
 		
 		int count = VERTEX_COUNT * VERTEX_COUNT;
+		heights = new float[VERTEX_COUNT][VERTEX_COUNT];
 		float[] vertices = new float[count * 3];
 		float[] normals = new float[count * 3];
 		float[] textureCoords = new float[count*2];
-		int[] indices = new int[6*(VERTEX_COUNT-1)*(VERTEX_COUNT-1)];
+		int[] indices = new int[6*(VERTEX_COUNT-1)*(VERTEX_COUNT * 1)];
 		int vertexPointer = 0;
 		for(int i=0;i<VERTEX_COUNT;i++){
 			for(int j=0;j<VERTEX_COUNT;j++){
