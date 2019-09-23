@@ -1,5 +1,6 @@
 package engineTester;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -7,6 +8,7 @@ import java.util.Random;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
+import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
@@ -14,12 +16,18 @@ import entities.Camera;
 import entities.Entity;
 import entities.Light;
 import entities.Player;
+import fontMeshCreator.FontType;
+import fontMeshCreator.GUIText;
+import fontRendering.TextMaster;
 import guis.GuiRenderer;
 import guis.GuiTexture;
 import models.RawModel;
 import models.TexturedModel;
 import normalMappingObjConverter.NormalMappedObjLoader;
 import objConverter.OBJFileLoader;
+import particles.ParticleMaster;
+import particles.ParticleSystem;
+import particles.ParticleTexture;
 import renderEngine.DisplayManager;
 import renderEngine.Loader;
 import renderEngine.MasterRenderer;
@@ -39,6 +47,13 @@ public class MainGameLoop {
 	
 		DisplayManager.createDisplay();
 		Loader loader = new Loader();
+		TextMaster.init(loader);
+		MasterRenderer renderer = new MasterRenderer(loader);
+		ParticleMaster.init(loader, renderer.getProjectionMatrix());
+		
+		FontType font = new FontType(loader.loadTexture("candara"), new File("res/candara.fnt"));
+		GUIText text = new GUIText("This is the test", 3, font, new Vector2f(0f,0.5f), 0.4f, true);
+		text.setColour(0.1f, 0.1f, 0);
 		
 		//***************Terrain texture***********//
 		TerrainTexture backgroundTexture = new TerrainTexture(loader.loadTexture("grassy2"));
@@ -61,11 +76,11 @@ public class MainGameLoop {
 		
 		TexturedModel fern = new TexturedModel(OBJFileLoader.loadOBJ("fern", loader), 
 				fernTextureAtlas);
-		fern.getTexture().setHasTransparency(true);
 		
 		TexturedModel bobble = new TexturedModel(OBJLoader.loadObjModel("pine", loader), 
 				new ModelTexture(loader.loadTexture("pine")));
 		bobble.getTexture().setHasTransparency(true);
+		fern.getTexture().setHasTransparency(true);
 		
 		Terrain terrain = new Terrain(0, -1, loader, texturePack, blendMap, "heightmap");
         List<Terrain> terrains = new ArrayList<Terrain>();
@@ -142,13 +157,11 @@ public class MainGameLoop {
         Light sun = new Light(new Vector3f(10000, 10000, -10000), new Vector3f(1.3f, 1.3f, 1.3f));
         lights.add(sun);
  
-        MasterRenderer renderer = new MasterRenderer(loader);
- 
         RawModel bunnyModel = OBJLoader.loadObjModel("person", loader);
         TexturedModel stanfordBunny = new TexturedModel(bunnyModel, new ModelTexture(
                 loader.loadTexture("playerTexture")));
  
-        Player player = new Player(stanfordBunny, new Vector3f(75, 5, -75), 0, 100, 0, 0.6f);
+        Player player = new Player(stanfordBunny, new Vector3f(75, 5, -75), 10, 10, 10, 0.2f);
         entities.add(player);
         Camera camera = new Camera(player);
         List<GuiTexture> guiTextures = new ArrayList<GuiTexture>();
@@ -163,6 +176,15 @@ public class MainGameLoop {
         List<WaterTile> waters = new ArrayList<WaterTile>();
         WaterTile water = new WaterTile(75, -75, 0);
         waters.add(water);
+        
+        ParticleTexture particleTexture = new ParticleTexture(loader.loadTexture("particleAtlas"), 4);
+        
+        ParticleSystem system = new ParticleSystem(particleTexture, 40, 10, 0.1f, 1,1.6f);
+        
+        system.setLifeError(0.1f);
+        system.setSpeedError(0.25f);
+        system.setScaleError(0.5f);
+        system.randomizeRotation();
          
         //****************Game Loop Below*********************
 		
@@ -170,12 +192,17 @@ public class MainGameLoop {
 			player.move(terrain);
             camera.move();
             picker.update();
+            
+            system.generateParticles(player.getPosition());
+            
+            ParticleMaster.update(camera);
+            
             entity.increaseRotation(0, 1, 0);
             entity2.increaseRotation(0, 1, 0);
             entity3.increaseRotation(0, 1, 0);
             GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
              
-            //render reflection teture
+            //render reflection texture
             buffers.bindReflectionFrameBuffer();
             float distance = 2 * (camera.getPosition().y - water.getHeight());
             camera.getPosition().y -= distance;
@@ -193,10 +220,17 @@ public class MainGameLoop {
             buffers.unbindCurrentFrameBuffer(); 
             renderer.renderScene(entities, normalMapEntities, terrains, lights, camera, new Vector4f(0, -1, 0, 100000));    
             waterRenderer.render(waters, camera, sun);
+            
+            ParticleMaster.renderParticles(camera);
+            
             guiRenderer.render(guiTextures);
+            TextMaster.render();
              
             DisplayManager.updateDisplay();	
 		}
+		
+		ParticleMaster.cleanUp();
+		TextMaster.cleanUp();
 		buffers.cleanUp();
 		waterShader.cleanUp();
 		guiRenderer.cleanUp();
