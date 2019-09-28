@@ -10,8 +10,7 @@ public class ContrastChanger {
 	
 	public ContrastChanger() {
 		shader = new ContrastShader();
-		renderer = new ImageRenderer();
-		
+		renderer = new ImageRenderer();	
 	}
 	
 	public void render(int texture) {

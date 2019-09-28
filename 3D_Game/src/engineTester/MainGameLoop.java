@@ -119,6 +119,13 @@ public class MainGameLoop {
         boulderModel.getTexture().setNormalMap(loader.loadTexture("boulderNormal"));
         boulderModel.getTexture().setShineDamper(10);
         boulderModel.getTexture().setReflectivity(0.5f);
+        
+        TexturedModel cherryModel = new TexturedModel(OBJLoader.loadObjModel("cherry", loader),
+        		new ModelTexture(loader.loadTexture("cherry")));
+        cherryModel.getTexture().setHasTransparency(true);
+        cherryModel.getTexture().setShineDamper(10);
+        cherryModel.getTexture().setReflectivity(0.5f);
+        cherryModel.getTexture().setSpecularMap(loader.loadTexture("cherryS"));
          
          
         //************ENTITIES*******************
@@ -126,9 +133,11 @@ public class MainGameLoop {
         Entity entity = new Entity(barrelModel, new Vector3f(75, 10, -75), 0, 0, 0, 1f);
         Entity entity2 = new Entity(boulderModel, new Vector3f(85, 10, -75), 0, 0, 0, 1f);
         Entity entity3 = new Entity(crateModel, new Vector3f(65, 10, -75), 0, 0, 0, 0.04f);
+        Entity entity4 = new Entity(cherryModel, new Vector3f(65, 10, -75), 0, 0, 0, 0.04f);
         normalMapEntities.add(entity);
         normalMapEntities.add(entity2);
         normalMapEntities.add(entity3);
+        normalMapEntities.add(entity4);
          
         Random random = new Random(5666778);
         for (int i = 0; i < 60; i++) {
@@ -242,7 +251,6 @@ public class MainGameLoop {
              
             DisplayManager.updateDisplay();	
 		}
-		
 		
 		PostProcessing.cleanUp();
 		fbo.cleanUp();
